@@ -78,6 +78,7 @@ class ImageHolder:
         if self.path[-3:] in ['mp4','gif','mov','mpg','epg','3gp','mkv','amv']:
             self.op = cv2.VideoCapture(path)
         self.image = image
+        self.slow = None
         self.waiter = threading.Condition()
 
     def reveal_image(self, image):
@@ -100,7 +101,18 @@ class ImageHolder:
             PIL.Image: the image assigned to this holder
         """
         if self.op is not None:
-            _,ret =self.op.read()
+            while True:
+                if not (self.slow is None):
+                    self.slow+=1
+                    if not self.slow%10==0:
+                        return self.last
+                i,ret =self.op.read()
+                if ret is None:
+                    self.op.set(2,0);
+                    self.slow=1
+                    continue
+                break
+            self.last=ret
             return ret
         if self.image is None:
             with self.waiter:
