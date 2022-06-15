@@ -75,7 +75,7 @@ class ImageHolder:
     def __init__(self, path, image=None):
         self.path = path
         self.op = None
-        if self.path[-3:] in ['mp4','gif','mov','mpg','epg','3gp','mkv','amv']:
+        if self.path[-3:] in ['mp4','gif','mov','mpg','epg','3gp','mkv','amv','webm']:
             self.op = cv2.VideoCapture(path)
         self.image = image
         self.slow = None
